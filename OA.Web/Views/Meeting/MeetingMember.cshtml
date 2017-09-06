@@ -1,0 +1,153 @@
+﻿@model IEnumerable<OA.Model.MeetMember>
+
+@{
+    ViewBag.Title = "MeetingMember";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<script type="text/javascript">
+    $(function () {
+        loadPage();
+        //显示所有人员
+        $("#addMember").on("click", function () {
+            $(".AllEmp").empty();
+            $.ajax({
+                url: "GetAllEmp",
+                type: "post",
+                datatype: "json",
+                success: function (data) {
+                    if (data != null)
+                        AllEmpList(data);
+                    }
+            })
+        })
+        $("#searchMsg").on("click", function () {
+            loadPage();
+        })
+     
+    })
+    //加载当前成员列表
+    function loadPage() {
+        $("#List").empty();
+        $.ajax({
+            url: "MMList",
+            datatype: "json",
+            type: "Post",
+            data: { Joined: $("#Joined").val(), meetId: $("#meetid").val() },
+            success: function (data) {
+                if (data != null) {
+                    addToList(data);
+                }
+            }
+        });
+    }
+
+    //加载会议成员列表
+    function addToList(data) {
+        $("#List").append('<table id="data_table" class="table"> <thead><tr><th>姓名</th><th>&nbsp;&nbsp;&nbsp;操  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作</th></tr><tbody></tbody></table>');
+        $.each(eval("(" + data + ")").list, function (index, item) {
+            str = item.Joined== 0 ? '<a class="valid" id=' + item.MMId + '  onclick="JoinedChange(' + item.MMId + ')">设为已参加&nbsp;</a>' :
+                '<a class="valid" id=' + item.MMId + '  onclick="JoinedChange(' + item.MMId + ')">设为未参加&nbsp;</a>'
+            $("#data_table tbody").append('<tr><td>' + item.EmpName + '</td><td>' + str + '<a class="delete" id=' + item.MMId + '  onclick="Delete(' + item.MMId + ')">删除&nbsp;</a></td></tr>');
+        });
+    }
+    //加载所有员工列表
+    function AllEmpList(result) {
+        $(".AllEmp").append('<table id="data_table_All"  class="table "> <thead><tr><th><input type="checkbox" name="checkAll" class="checkAll" onclick="AllCheck ()"/><a onclick="sureAdd()">添加</a></th><th>姓名</th><th>部门</th><th>操作</th></tr><tbody></tbody></table>');
+        $.each(eval("(" + result + ")").AllEmps, function (index, item) {
+            $("#data_table_All tbody").append('<tr><td><input type="checkbox" name="checkbox" class="checkbox" value='
+                + item.EmpId + ' /></td><td>' + item.EmpName + '</td><td>' + item.DeptName + '</td><td><a  onclick="addMember(' + item.EmpId + ')">添加</a></td></tr>');
+        });
+    }
+    //全选按钮
+    function AllCheck() {
+        var isCheckAll = $(".checkAll").prop("checked");
+            $(".checkbox").prop('checked', isCheckAll);
+    }
+    //添加按钮
+    function addMember(empId) {
+        $.ajax({
+            url: "addOneMember",
+            type: "post",
+            data: { empId: empId, meetId: $("#meetid").val() },
+            success: function (data) {
+                if (data == "No") {
+                    alert("该成员已存在");
+                }
+                if(data=="Ok") {
+                    loadPage();
+                }
+            }
+        })
+    }
+
+    //成员删除
+    function Delete(mmid) {
+        $.ajax({
+            url:"DeleteMember?id="+mmid,
+            type: "post",
+            success: function (data) {
+                if (data != null)
+                    loadPage();
+                    alert("删除成功")
+            }
+        })
+    }
+    //修改是否参加
+    function JoinedChange(mmid) {
+        $.ajax({
+            url: "JoinChange?id=" + mmid,
+            type: "post",
+            success: function (data) {
+                if (data != null)
+                    loadPage();
+            }
+        })
+    }
+    //批量增加成员
+    function sureAdd() {
+        var obj = document.getElementsByName("checkbox");
+        check=[];
+        for(var i=0;i<obj.length;i++){
+            if(obj[i].checked){
+                check.push(obj[i].value)
+            }
+        }
+        if (check.length==0) {
+            alert("请选择成员");
+            return null;
+        }
+        $.ajax({
+            url: "sureAdd",
+            type: "post",
+            datatype: "json",
+            data: { members: check,meetId: $("#meetid").val() },
+            success:function(data){
+                if (data != null) {
+                    loadPage();
+                }
+            }
+        })
+    }
+</script>
+
+<input type="hidden" id="meetid" value="@ViewData["MeetId"]"/>
+   
+        <div class="input-group col-sm-2" style="margin-bottom:5px;position:relative">
+            @Html.DropDownList("Joined", new List<SelectListItem>
+        {
+            ( new SelectListItem() { Text="未出席",Value="0",Selected=true}),
+            (new SelectListItem() { Text="出席",Value="1",Selected=false})
+        }, new { @class = "form-control" })
+        </div>
+        <div class="col-sm-6">
+            <button class="btn btn-info bt-search" id="searchMsg">查询</button>
+            <button class="btn btn-info bt-search" id="addMember">新增成员</button>
+            <a href="List">返回</a>
+        </div>
+            <span  style="display:inline;width:480px;float:left;"><b>当前成员</b><span  id="List"></span></span>
+            <span  style="float:right;width:300px;height:510px; overflow-y:scroll;"><span class="AllEmp"></span></span>
+
+    
+
+

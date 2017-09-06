@@ -1,0 +1,34 @@
+D:\毕业论文\OA\SolutionOA\OA.DAL\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA\OA.DAL\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA\OA.DAL\obj\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA\OA.DAL\obj\Debug\OA.DAL.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.DAL\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.DAL\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.DAL\obj\Debug\OA.DAL.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.DAL\obj\Debug\OA.DAL.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.DAL\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.DAL\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA\OA.DAL\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA\OA.DAL\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA\OA.DAL\obj\Debug\OA.BLL.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\obj\Debug\OA.BLL.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\obj\Debug\OA.DAL.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.DAL\obj\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\obj\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\obj\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.DAL\obj\Debug\OA.BLL.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA0\OA.DAL\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA0\OA.DAL\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA0\OA.DAL\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA0\OA.DAL\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA0\OA.DAL\obj\Debug\OA.BLL.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA0\OA.DAL\obj\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA0\OA.DAL\obj\Debug\OA.DAL.pdb

@@ -1,0 +1,129 @@
+﻿@model OA.Model.Plan
+
+@{
+    ViewBag.Title = "添加计划";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        //时间控件
+        $("#PlanDate").datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: 2,
+            autoclose: true,//自动关闭
+            minDate: new Date(),
+            minView: 2,//最精准的时间选择为日期0-分 1-时 2-日 3-月
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        var planDate = $(".planDate").text();
+        if (planDate != null && planDate != "")
+        { $("#PlanDate").datetimepicker("update", planDate); }
+        else {
+            $("#PlanDate").datetimepicker("update", new Date());
+        }
+        //$('#PlanDate').datetimepicker('setStartDate', new Date());//限制今天之前不能选
+        //提交事件
+        $("#submit").on("click", function (event) {
+            if ($("#PlanTitle").val() == "" || $("#PlanDate").val() == "" || $("#StartTime").val() == "" || $("#EndTime").val() == "") { alert("存在未填项！"); return null;}
+            $.ajax({
+                url: "Add",
+                datatype: "json",
+                type: "post",
+                data: {
+                    planTitle: $("#PlanTitle").val(),
+                    planDate: $("#PlanDate").val(),
+                    startTime: $("#StartTime").val(),
+                    endTime: $("#EndTime").val(),
+                    remark: $("#Remark").val(),
+                    planId: $("#PlanId").val(),
+                },
+                success: function (data) {
+                    if (data != null) {
+                        alert("OK");
+                    }
+                }
+            })
+        })
+
+        $("#delete").on("click", function (event) {
+            $.ajax({
+                url: "Delete?id=" + $("#PlanId").val(),
+                datatype: "json",
+                type: "post",
+                success: function (data) {
+                    if (data != null) {
+                        window.location = "Index";
+                    }
+                }
+            })
+        })
+    })
+</script>
+
+<h2>添加计划</h2>
+    @using (Html.BeginForm("Add", "Plan", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <legend>@Html.ActionLink("返回", "Index")</legend>
+            <div class="form-group">
+                @Html.HiddenFor(model => model.PlanId)
+                <text hidden="hidden" class="planDate">@ViewData["PlanDate"]</text>
+                <div class="col-sm-2 control-label"></div>
+                <label class="col-sm-2 control-label" for="PlanTitle">主题</label>
+                <div class="col-sm-4">
+                    @Html.EditorFor(model => model.PlanTitle, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <label class="col-sm-2 control-label" for="PlanDate">计划日期</label>
+                <div class="col-sm-4">
+                    <input type="text" value="@DateTime.Now" id="PlanDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd" required="required">
+                </div>
+            </div>
+            <div class="form-group">
+                    <div class="col-sm-2 control-label"></div>
+                    <label class="col-sm-2 control-label" for="StartTime">开始时间</label>
+                    <div class="col-sm-4">
+                        @Html.DropDownList("StartTime", null,"--请选择--", new { @class = "form-control", onselect = "false",required= "required" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label"></div>
+                    <label class="col-sm-2 control-label" for="EndTime">结束时间</label>
+                    <div class="col-sm-4">
+                        @Html.DropDownList("EndTime", null, "--请选择--", new { @class = "form-control", onselect = "false", required = "required" })
+                        @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label"></div>
+                    <label class="col-sm-2 control-label" for="Remark">备注</label>
+                    <div class="col-sm-4">
+                        <textarea class="form-control" id="Remark" rows="3" cols="60">@ViewData["Remark"]</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-5"></div>
+                    <div class="col-sm-5">
+                        <input type="button" value="提交" id="submit" class="btn btn-default" />
+                        @{ if (Model.PlanId == 0)
+                            {
+                                <input type="button" value="删除" id="delete" class="btn btn-default"style="display:none" />
+                            }
+                            else
+                            {
+                                <input type="button" value="删除" id="delete" class="btn btn-default"  />
+                            }
+                        }
+                    </div>
+                </div>
+        </fieldset>
+    }

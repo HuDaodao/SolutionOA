@@ -1,0 +1,5 @@
+D:\毕业论文\OA\SolutionOA\OA.DAL\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA\OA.DAL\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA\OA.DAL\obj\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA\OA.DAL\obj\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA\OA.DAL\obj\Debug\OA.DAL.csprojResolveAssemblyReference.cache

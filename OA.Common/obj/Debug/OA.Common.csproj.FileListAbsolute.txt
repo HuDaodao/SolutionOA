@@ -1,0 +1,35 @@
+D:\毕业论文\OA\SolutionOA\OA.Common\bin\Debug\OA.Common.dll
+D:\毕业论文\OA\SolutionOA\OA.Common\bin\Debug\OA.Common.pdb
+D:\毕业论文\OA\SolutionOA\OA.Common\obj\Debug\OA.Common.dll
+D:\毕业论文\OA\SolutionOA\OA.Common\obj\Debug\OA.Common.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\bin\Debug\OA.Common.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\bin\Debug\OA.Common.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\obj\Debug\OA.Common.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\obj\Debug\OA.Common.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\obj\Debug\OA.Common.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Common\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA\OA.Common\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA\OA.Common\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA\OA.Common\obj\Debug\OA.Common.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\bin\Debug\OA.Common.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\bin\Debug\OA.Common.pdb
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\obj\Debug\OA.Common.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\obj\Debug\OA.Common.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Common\obj\Debug\OA.Common.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.Common\bin\Debug\OA.Common.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Common\bin\Debug\OA.Common.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.Common\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Common\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA-5\OA.Common\obj\Debug\OA.Common.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Common\obj\Debug\OA.Common.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.Common\obj\Debug\OA.Common.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA0\OA.Common\bin\Debug\OA.Common.dll
+D:\毕业论文\OA\SolutionOA0\OA.Common\bin\Debug\OA.Common.pdb
+D:\毕业论文\OA\SolutionOA0\OA.Common\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA0\OA.Common\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA0\OA.Common\obj\Debug\OA.Common.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA0\OA.Common\obj\Debug\OA.Common.dll
+D:\毕业论文\OA\SolutionOA0\OA.Common\obj\Debug\OA.Common.pdb

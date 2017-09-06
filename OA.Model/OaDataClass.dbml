@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="OA" Class="OaDataClassDataContext" Serialization="Unidirectional" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=OA;Integrated Security=True" SettingsObjectName="OA.Model.Properties.Settings" SettingsPropertyName="OAConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.TaskList" Member="TaskList">
+    <Type Name="TaskList">
+      <Column Name="TLId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProjId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TLName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="StartTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Association Name="TaskList_Task" Member="Task" ThisKey="TLId" OtherKey="TLId" Type="Task" />
+      <Association Name="Project_TaskList" Member="Project" ThisKey="ProjId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientRelation" Member="ClientRelation">
+    <Type Name="ClientRelation">
+      <Column Name="CRId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Column Name="Status" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Employee_ClientRelation" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+      <Association Name="Client_ClientRelation" Member="Client" ThisKey="CId" OtherKey="CId" Type="Client" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.EmpRole" Member="EmpRole">
+    <Type Name="EmpRole">
+      <Column Name="EmpRoleId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RoleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Role_EmpRole" Member="Role" ThisKey="RoleId" OtherKey="RoleId" Type="Role" IsForeignKey="true" />
+      <Association Name="Employee_EmpRole" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MeetMember" Member="MeetMember">
+    <Type Name="MeetMember">
+      <Column Name="MMId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MeetId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Joined" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Association Name="Employee_MeetMember" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+      <Association Name="Meeting_MeetMember" Member="Meeting" ThisKey="MeetId" OtherKey="MeetId" Type="Meeting" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PlanPeriod" Member="PlanPeriod">
+    <Type Name="PlanPeriod">
+      <Column Name="TPId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Time" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Task" Member="Task">
+    <Type Name="Task">
+      <Column Name="TaskId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TaskName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="StartTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Column Name="PMId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TLId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProjId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="TaskList_Task" Member="TaskList" ThisKey="TLId" OtherKey="TLId" Type="TaskList" IsForeignKey="true" />
+      <Association Name="ProjectMember_Task" Member="ProjectMember" ThisKey="PMId" OtherKey="PMId" Type="ProjectMember" IsForeignKey="true" />
+      <Association Name="Project_Task" Member="Project" ThisKey="ProjId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Dept" Member="Dept">
+    <Type Name="Dept">
+      <Column Name="DeptId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DeptName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ParentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="LastChangeTime" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="OperUser" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Dept_Dept" Member="Dept2" ThisKey="DeptId" OtherKey="ParentId" Type="Dept" />
+      <Association Name="Dept_Employee" Member="Employee" ThisKey="DeptId" OtherKey="DeptId" Type="Employee" />
+      <Association Name="Dept_Dept" Member="Dept1" ThisKey="ParentId" OtherKey="DeptId" Type="Dept" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Position" Member="Position">
+    <Type Name="Position">
+      <Column Name="PositionId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PosName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ParentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="LastChangeTime" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="OperUser" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Position_Position" Member="Position2" ThisKey="PositionId" OtherKey="ParentId" Type="Position" />
+      <Association Name="Position_Employee" Member="Employee" ThisKey="PositionId" OtherKey="PositionId" Type="Employee" />
+      <Association Name="Position_Position" Member="Position1" ThisKey="ParentId" OtherKey="PositionId" Type="Position" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Role" Member="Role">
+    <Type Name="Role">
+      <Column Name="RoleId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Association Name="Role_EmpRole" Member="EmpRole" ThisKey="RoleId" OtherKey="RoleId" Type="EmpRole" />
+      <Association Name="Role_RoleRight" Member="RoleRight" ThisKey="RoleId" OtherKey="RoleId" Type="RoleRight" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Employee" Member="Employee">
+    <Type Name="Employee">
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EmpName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EmpUserName" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EmpPassWord" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="DeptId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PositionId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Sex" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PosName" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="DeptName" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Dimission" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Admin" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="LastChangeTime" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="OperUser" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Employee_ClientRelation" Member="ClientRelation" ThisKey="EmpId" OtherKey="EmpId" Type="ClientRelation" />
+      <Association Name="Employee_EmpRole" Member="EmpRole" ThisKey="EmpId" OtherKey="EmpId" Type="EmpRole" />
+      <Association Name="Employee_MeetMember" Member="MeetMember" ThisKey="EmpId" OtherKey="EmpId" Type="MeetMember" />
+      <Association Name="Employee_Meeting" Member="Meeting" ThisKey="EmpId" OtherKey="EmId" Type="Meeting" />
+      <Association Name="Employee_Client" Member="Client" ThisKey="EmpId" OtherKey="EmpId" Type="Client" />
+      <Association Name="Employee_Plan" Member="Plan" ThisKey="EmpId" OtherKey="EmpId" Type="Plan" />
+      <Association Name="Employee_RiCheng" Member="RiCheng" ThisKey="EmpId" OtherKey="EmpId" Type="RiCheng" />
+      <Association Name="Employee_ProjectMember" Member="ProjectMember" ThisKey="EmpId" OtherKey="EmpId" Type="ProjectMember" />
+      <Association Name="Dept_Employee" Member="Dept" ThisKey="DeptId" OtherKey="DeptId" Type="Dept" IsForeignKey="true" />
+      <Association Name="Position_Employee" Member="Position" ThisKey="PositionId" OtherKey="PositionId" Type="Position" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MeetRoom" Member="MeetRoom">
+    <Type Name="MeetRoom">
+      <Column Name="RoomId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RoomName" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="Person" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(1000)" CanBeNull="true" />
+      <Column Name="IsValid" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="MeetRoom_Meeting" Member="Meeting" ThisKey="RoomId" OtherKey="RoomId" Type="Meeting" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Meeting" Member="Meeting">
+    <Type Name="Meeting">
+      <Column Name="MeetId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Subject" Type="System.String" DbType="VarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(500)" CanBeNull="true" />
+      <Column Name="EmId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RoomId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StartDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Minutes" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Meeting_MeetMember" Member="MeetMember" ThisKey="MeetId" OtherKey="MeetId" Type="MeetMember" />
+      <Association Name="Employee_Meeting" Member="Employee" ThisKey="EmId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+      <Association Name="MeetRoom_Meeting" Member="MeetRoom" ThisKey="RoomId" OtherKey="RoomId" Type="MeetRoom" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Client" Member="Client">
+    <Type Name="Client">
+      <Column Name="CId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Company" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Department" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Position" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Mail" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Column Name="Status" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Client_ClientRelation" Member="ClientRelation" ThisKey="CId" OtherKey="CId" Type="ClientRelation" />
+      <Association Name="Employee_Client" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[Plan]" Member="Plan">
+    <Type Name="Plan">
+      <Column Name="PlanId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PlanTitle" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="StartTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Column Name="CreateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Employee_Plan" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RiCheng" Member="RiCheng">
+    <Type Name="RiCheng">
+      <Column Name="RCId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RCDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="RCTitle" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Column Name="CreateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Employee_RiCheng" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RoleRight" Member="RoleRight">
+    <Type Name="RoleRight">
+      <Column Name="RightId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RoleId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RightCode" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Role_RoleRight" Member="Role" ThisKey="RoleId" OtherKey="RoleId" Type="Role" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProjectMember" Member="ProjectMember">
+    <Type Name="ProjectMember">
+      <Column Name="PMId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EmpId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProjId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="ProjectMember_Task" Member="Task" ThisKey="PMId" OtherKey="PMId" Type="Task" />
+      <Association Name="Employee_ProjectMember" Member="Employee" ThisKey="EmpId" OtherKey="EmpId" Type="Employee" IsForeignKey="true" />
+      <Association Name="Project_ProjectMember" Member="Project" ThisKey="ProjId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Project" Member="Project">
+    <Type Name="Project">
+      <Column Name="ProjectId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProjName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="BudGet" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Remark" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Association Name="Project_TaskList" Member="TaskList" ThisKey="ProjectId" OtherKey="ProjId" Type="TaskList" />
+      <Association Name="Project_Task" Member="Task" ThisKey="ProjectId" OtherKey="ProjId" Type="Task" />
+      <Association Name="Project_ProjectMember" Member="ProjectMember" ThisKey="ProjectId" OtherKey="ProjId" Type="ProjectMember" />
+    </Type>
+  </Table>
+</Database>

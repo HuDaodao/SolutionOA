@@ -1,0 +1,157 @@
+﻿@model OA.Model.Employee
+
+@{
+    ViewBag.Title = "CreateAndEditer";
+}
+<script type="text/javascript">
+    $(function () {
+        //勾选checkbox
+        var checkStr = $("#InRole").val();
+        //var checkStr =@ViewData["InRole"].ToString();
+        if(checkStr!=""||checkStr!=null)
+            {
+                var roles=checkStr.split(",");
+                $.each(roles,function(index,item){
+                    $(".right[value=" + item + "]").attr("checked", "checked");
+                })
+            }
+
+        //提交事件
+        $('.form-horizontal').submit(function (event) {
+            event.preventDefault()
+                if ($(this).valid()) {
+                    var data = $(this).serialize;
+                    var obj = document.getElementsByName('role');
+                    check = [];
+                    for (var i = 0; i < obj.length; i++) {
+                        if (obj[i].checked) {
+                            check.push(obj[i].value)
+                        }
+                    }
+                    $.ajax({
+                        url: this.action,
+                        type: this.method,
+                        data: $(this).serialize(),
+                        success: function (result) {
+                            if (result !== null) {
+                                var emp=eval("("+result+")").emp;
+                                $.ajax({
+                                    url: "SaveEmpRole",
+                                    type: "post",
+                                    datatype: "json",
+                                    data: { Id: emp.EmpId, RoleCodes: check },
+                                    success: function () {
+                                        alert("保存成功！");
+                                    }
+                                })
+                            }
+                        }
+                    });
+                }
+                return false;
+            });
+        })
+</script>
+<h2>员工基本信息</h2>
+
+@using (Html.BeginForm("CreateAndEditer", "Employee", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <fieldset>
+        <legend>@Html.ActionLink("返回", "List")</legend>
+        <div class="form-group">
+            <input type="hidden" id="EmpId" />
+            @Html.HiddenFor(model => model.EmpId)
+            <label class="col-sm-1 control-label" for="EmpName">姓名</label>
+            <div class="col-sm-2">
+                @Html.EditorFor(model => model.EmpName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.EmpName, "", new { @class = "text-danger" })
+                @*<input class="form-control" id="EmpName" type="text" />*@
+            </div>
+            <label class="col-sm-1 control-label" for="EmpUserName">昵称</label>
+            <div class="col-sm-2">
+                @Html.EditorFor(model => model.EmpUserName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.EmpUserName, "", new { @class = "text-danger" })
+            </div>
+            <label class="col-sm-1 control-label" for="Sex">性别</label>
+            <div class="col-sm-2">
+                @Html.DropDownList("Sex", new List<SelectListItem>
+                    {
+                      (new SelectListItem() {Text = "男", Value = "true", Selected =true}),
+                      (new SelectListItem() {Text = "女", Value = "false", Selected = false})
+                    }, new { @class = "form-control" })
+            </div>
+            <label class="col-sm-1 control-label" for="Dimission">离职</label>
+            <div class="col-sm-2">
+                @Html.DropDownList("Dimission", new List<SelectListItem>
+                    {
+                      (new SelectListItem() {Text = "未离职", Value = "false",Selected=true }),
+                      (new SelectListItem() {Text = "已离职", Value = "true", Selected = false})
+                    }, new { @class = "form-control" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-1 control-label" for="Email">邮箱</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", type = "email" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+
+            <label class="col-sm-1 control-label" for="EmpPassWord">密码</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.EmpPassWord, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.EmpPassWord, "", new { @class = "text-danger" })
+            </div>
+            <label class="col-sm-2 control-label" for="Admin">是否有管理员权限</label>
+            <div class="col-sm-2">
+                @Html.DropDownList("Admin", new List<SelectListItem>
+                    {
+                      (new SelectListItem() {Text = "否", Value = "false", Selected = true}),
+                      (new SelectListItem() {Text = "是", Value = "true", Selected = false})
+                    }, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-1 control-label" for="Mobile">手机</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <label class="col-sm-1 control-label" for="DeptId">部门</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("DeptId", null, "--请选择--", new { @class = "form-control", onselect = "false", required = "required" })
+                @Html.ValidationMessageFor(model => model.DeptId, "", new { @class = "text-danger" })
+            </div>
+            <label class="col-sm-1 control-label" for="PositionId">职位</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("PositionId", null, "--请选择--", new { @class = "form-control", onselect = "false", required = "required" })
+                @Html.ValidationMessageFor(model => model.PositionId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-1 control-label" for="Right">角色</label>
+            <div class="col-sm-11">
+                <input type="hidden" name="InRole" id="InRole" value="@ViewData["InRole"]" />
+                <table id="right">
+                    <tr>
+                        @foreach (var role in (List<OA.Model.Role>)ViewData["Roles"])
+                        {
+                            <td>
+                                    <input type="checkbox" name="role" class="right" value="@role.RoleId" />
+                                @role.Name &nbsp;&nbsp;&nbsp;
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-6">
+                <input type="submit" value="提交" class="btn btn-default" />
+            </div>
+        </div>
+        </fieldset>
+}
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }

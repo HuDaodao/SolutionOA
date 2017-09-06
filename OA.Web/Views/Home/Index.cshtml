@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<style type="text/css">
+    body{
+           background-image:url("../../Img/menu.png");
+           background-repeat:repeat-y;
+           /*background-color:#808080;*/
+       }
+</style>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        @Html.ActionLink("OA系统", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" ,style= "font-size:25px;" })
+    </div>
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+            <li>@Html.ActionLink("主页", "Index", "Home")</li>
+        </ul>
+
+        @*@Html.Partial("_LoginPartial")*@
+        @*By me*@
+        <ul class="nav navbar-nav navbar-right">
+            <li>@Html.ActionLink("退出登录", "LogIn", "Home", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        </ul>
+        @*By me end*@
+    </div>
+</div>
+@* 主体内容 *@
+<div class="container row body-content">
+    <div class="col-md-3">
+        @*@ViewData["Menustr"].ToString()*@
+        @Html.Raw(ViewData["MenuStr"].ToString())
+    </div>
+    <div class="col-md-9">
+        <iframe frameborder="0" scrolling="no" noresize="noresize" name="content" width="980px" height="900px" src="@Url.Action("TextAction")"></iframe>
+    </div>
+</div>
+
+

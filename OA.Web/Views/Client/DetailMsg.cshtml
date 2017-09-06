@@ -1,0 +1,154 @@
+﻿@model IEnumerable<OA.Model.ClientRelation>
+
+@{
+    ViewBag.Title = "DetailMsg";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<h2>详细信息</h2>
+
+<div style="height:100px;" id="detailMsg">
+    <h4>@Html.ActionLink("返回", "Index")</h4>
+</div>
+
+<div class="col-sm-10" style="overflow:scroll;height:400px;width:750px;">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                日期
+            </th>
+            <th>
+                事件
+            </th>
+            <th>
+                备注
+            </th>
+            <th>操作</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Remark)
+                </td>
+                <td>
+                    <a href="javascript:void(0)" onclick="EditCR(@item.CRId)">编辑</a>
+                   |<a href="javascript:void(0)" onclick="Delete(@item.CRId)">删除</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="col-sm-2">
+        <input type="text" hidden="hidden" id="CRId" />
+        <b>事件标题</b>
+        <input type="text" class="form-control" id="title" />
+        <b>日期</b>
+        <input type="text" value="@DateTime.Now" id="CRDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd">
+        <b>备注</b>
+        <textarea name ="remark"  cols=20 rows=8 id="remak"></textarea>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-7" style="margin-top:5px;">
+        <input type="button" value="保存" class="btn btn-default" id="addCR" />
+    </div>
+</div>
+
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        var clientId=@ViewData["clientId"];
+        $.ajax({
+            url: "GetOneClient?id="+clientId,
+            type:"post",
+            datatype:"json",
+            success:function(data){
+                if(data!=null)
+                    var client=eval("(" + data + ")").client;
+                var clientType=client.CType==1?"重要":"普通";
+                $("#detailMsg").append("<table><tr><td>姓名："+client.CName+  "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>公司："+client.Company+
+                    "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>部门："+client.Department+"</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>职位："+client.Position+
+                    "</td></tr><tr><td>电话："+client.Phone+"</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>邮箱："+client.Mail+ 
+                    "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>地址："+client.Address+"</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>客户类型："+clientType+
+                    "</td></tr><tr><td colspan='6'>备注："+client.Remark+"</td><td><a href='CreateAndEdit?id="+clientId+"'>编辑</td></tr></table>");
+                $("#detailMsg").append('<input type="text" hidden="hidden" id="ClientId" value="'+clientId+'" />')
+            }
+        })
+
+        $("#CRDate").datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: 2,
+            autoclose: true,//自动关闭
+            //minDate: new Date(),
+            minView: 2,//最精准的时间选择为日期0-分 1-时 2-日 3-月
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        $("#CRDate").datetimepicker("update", new Date());
+        //$('#TimeSet').datetimepicker('setStartDate', new Date());
+
+        $("#addCR").on("click",function(){
+            if($("#title").val()==""||$("#title").val()==null||$("#CRDate").val()==null||$("#CRDate").val()==""){
+                alert("存在未填项");
+                return null;
+            }
+            $.ajax({
+                url:"AddCR",
+                type:"post",
+                datatype:"json",
+                data:{
+                    time:$("#CRDate").val(),
+                    title:$("#title").val(),
+                    Remark:$("#remak").val(),
+                    CId:clientId,
+                    CRId:$("#CRId").val(),
+                },
+                success:function(data){
+                    if(data!=null){
+                        window.location = "DetailMsg?id="+clientId;
+                    }
+                }
+            })
+        })
+    })
+
+    function EditCR(id){
+        $.ajax({
+            url:"GetOneCR?id="+id,
+            type:"post",
+            datatype:"json",
+            success:function(data){
+                if(data!=null){
+                    var cr = eval("(" + data + ")").cr;
+                    $("#CRId").val(id);
+                    $("#CRDate").val(cr.Date.substr(0,10));
+                    $("#remak").val(cr.Remark);
+                    $("#title").val(cr.Title);
+                }
+            }
+        })
+    }
+
+    function Delete(id){
+        $.ajax({
+            url:"DeleteCR?id="+id,
+            type:"post",
+            datatype:"json",
+            success:function(data){
+                if(data!=null){
+                    window.location = "DetailMsg?id="+$("#ClientId").val();
+                }
+            }
+        })
+    }
+</script>

@@ -1,0 +1,106 @@
+﻿@model OA.Model.Project
+
+@{
+    ViewBag.Title = "CreateAndEditer";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<h2>项目基础信息</h2>
+<legend>@Html.ActionLink("返回", "Index")</legend>
+
+@using (Html.BeginForm("CreateAndEdit", "Project",FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <div class="form-group">
+            @Html.HiddenFor(model => model.ProjectId)
+            <div class="col-sm-2 control-label"></div>
+            <label class="col-sm-2 control-label" for="PlanDate">项目名</label>
+            <div class="col-sm-4">
+                @Html.EditorFor(model => model.ProjName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"></div>
+            <label class="col-sm-2 control-label" for="StartDate">开始时间</label>
+            <div class="col-sm-4">
+                @Html.EditorFor(model=>model.StartDate,new { htmlAttributes = new { @class = "dateTimeStar form-control",  required = "required"} })
+                @*<input type="text" value="@DateTime.Now.ToString().Substring(0,10)" id="StartDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd" required="required">*@
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"></div>
+            <label class="col-sm-2 control-label" for="EndDate">结束时间</label>
+            <div class="col-sm-4">
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "dateTimeStar form-control", required = "required" } })
+                @*<input type="text" value="@DateTime.Now.ToString().Substring(0,10)" id="EndDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd" required="required">*@
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"></div>
+            <label class="col-sm-2 control-label" for="BudGet">预算</label>
+            <div class="col-sm-4">
+                @Html.EditorFor(model => model.BudGet, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"></div>
+            <label class="col-sm-2 control-label" for="Remark">备注</label>
+            <div class="col-sm-4">
+                @Html.TextAreaFor(model => model.Remark, 3, 47, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-3">
+                <input type="submit" value="保存" class="btn btn-default" />
+            </div>
+        </div>
+    </fieldset>
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        //时间控件
+        $("#StartDate,#EndDate").datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: 2,
+            autoclose: true,//自动关闭
+            minDate: new Date(),
+            minView: 2,//最精准的时间选择为日期0-分 1-时 2-日 3-月 
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        if ($("#StartDate").val()== "") {
+            $("#StartDate,#EndDate").datetimepicker("update", new Date());
+            $('#StartDate,#EndDate').datetimepicker('setStartDate', new Date());
+        }
+
+        //提交事件
+        $(".form-horizontal").submit(function (event) {
+            event.preventDefault();
+            if ($(this).valid()) {
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        if (result !== null) {
+                            alert("保存成功！");
+                            window.location = "Index";
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+
+    })
+</script>

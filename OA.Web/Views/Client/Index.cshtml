@@ -1,0 +1,153 @@
+﻿@model IEnumerable<OA.Model.Client>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<script src="~/Scripts/bootstrap-paginator.js"></script>
+<script type="text/javascript">
+    $(function () {
+        loadPage();
+            $("#serachBtn").click(function () {
+                $("#List").empty();
+                $("#pager").hide();
+                loadPage();
+                $("#pager").show();
+            })
+    })
+    function addToList(data) {
+        $("#List").empty();
+        $("#List").append('<table id="data_table" class="table table-striped"> <thead><tr><th>客户姓名</th><th>公司</th><th>部门</th><th>职位</th><th>电话</th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作</th></tr><tbody></tbody></table>');
+            $.each(eval("(" + data + ")").list, function (index, item) { 
+                statusStr = item.Status == 0 ? '<a class="status"  onclick="StatusChange(' + item.CId + ')">设为有效&nbsp;</a>' : '<a class="status"   onclick="StatusChange(' + item.CId + ')">置为无效&nbsp;</a>'
+                typeStr = item.CType == 0 ? '<a class="ctype"  onclick="CTypeChange(' + item.CId + ',1)">设为重要&nbsp;</a>' : '<a class="ctype"  onclick="CTypeChange(' + item.CId + ',0)">设为普通&nbsp;</a>'
+                allStr = '<a class="edit" id=' + item.CId + '  href="DetailMsg?id=' + item.CId + '">详细信息 </a> <a class="confirm-link" id="delete" href="#" onclick="deleteFunc(' + item.CId + ',\'' + item.CName + '\')">删除</a>'
+                $("#data_table tbody").append('<tr><td>' + item.CName + '</td><td>' + item.Company + '</td><td>' + item.Department + '</td><td>' + item.Position + '</td><td>'
+                    + item.Phone + '</td><td>' + statusStr +typeStr+allStr+ '</td></tr>');
+            });
+    }
+    //删除数据
+        function deleteFunc(clientId,clientName) {
+            var r = confirm("确认删除"+clientName+"的基础信息及其所有接触记录？");
+            if (r == true) {
+                $.ajax({
+                    url: "Delete?id=" + clientId,
+                    datatype: "json",
+                    type: "Post",
+                    success: function (data) {
+                        if (data == "yes") {
+                            $("#List").empty();
+                            $("#pager").empty();
+                            loadPage();
+                        }
+                        else {
+                            alert("删除失败");
+                        }
+                    }
+                })
+            }
+        }
+    //加载列表
+        function loadPage() {
+            $.ajax({
+                url: "List_Json",
+                datatype: "json",
+                type: "Post",
+                data: { searchMsg: $("#serachText").val(), CType: $("#CType").val(), Status: $("#Status").val() },
+                success: function (data) {
+                    if (data != null) {
+                        addToList(data);
+                        var pageCount = eval("(" + data + ")").pageCount; 
+                        var currentPage = eval("(" + data + ")").CurrentPage;
+                        var options = {
+                            bootstrapMajorVersion: 2, 
+                            currentPage: currentPage, 
+                            totalPages: pageCount, 
+                            itemTexts: function (type, page, current) {
+                                switch (type) {
+                                    case "first":
+                                        return "首页";
+                                    case "prev":
+                                        return "上一页";
+                                    case "next":
+                                        return "下一页";
+                                    case "last":
+                                        return "末页";
+                                    case "page":
+                                        return page;
+                                }
+                            },
+                            onPageClicked: function (event, originalEvent, type, page) {
+                                $("#List").empty();
+                                $("#pager").hide();
+                                $.ajax({
+                                    url: "List_Json",
+                                    type: "Post",
+                                    data: { page: page, searchMsg: $("#serachText").val(), CType: $("#CType").val(), Status: $("#Status").val() },
+                                    success: function (data1) {
+                                        if (data1 != null) {
+                                            addToList(data1);
+                                        }
+                                        $("#pager").show();
+                                    }
+                                });
+                            }
+                        };
+                        $("#pager").bootstrapPaginator(options);
+                    }
+                }
+            });
+        }
+
+    //修改客户类型
+        function CTypeChange(clientId,aimToType) {
+            $.ajax({
+                url: "CTypeChange",
+                type: "post",
+                data: { id: clientId, aimType: aimToType },
+                success: function (data) {
+                    if (data != null) {
+                        loadPage();
+                    }
+                }
+            })
+        }
+    //修改有效性
+        function StatusChange(CId) {
+            $.ajax({
+                url: "StatusChange",
+                type: "post",
+                data: { id: CId },
+                success: function (data) {
+                    if (data != null) {
+                        loadPage();
+                    }
+                }
+            })
+        }
+</script>
+
+<div class="input-group col-sm-2" style="margin-bottom:5px;margin-top:10px; position:relative">
+        @Html.DropDownList("CType", new List<SelectListItem>
+        {
+            ( new SelectListItem() { Text="全部",Value="-1",Selected=true}),
+            (new SelectListItem() { Text="普通",Value="0",Selected=false}),
+            (new SelectListItem() { Text="重要",Value="1",Selected=false})
+        }, new { @class = "form-control" })
+</div>
+<div class="input-group col-sm-2" style="margin-bottom:5px;margin-top:10px;position:relative">
+    @Html.DropDownList("Status", new List<SelectListItem>
+        {
+            ( new SelectListItem() { Text="有效",Value="true",Selected=true}),
+            (new SelectListItem() { Text="无效",Value="false",Selected=false})
+        }, new { @class = "form-control" })
+</div>
+<div class="input-group col-sm-3" style="margin-bottom:5px;margin-top:10px;position:relative">
+    <input type="text" class="form-control" id="serachText" placeholder="请输入客户姓名" style="width:150px;">
+    <span class="input-group-btn">
+        <button class="btn btn-info bt-search" id="serachBtn">查找</button>
+        <button class="btn btn-info bt-search" style="margin-left:3px;color:white;">@Html.ActionLink("新增客户", "CreateAndEdit")</button>
+    </span>
+</div>
+<div id="List"></div>
+<div id="pager"></div>

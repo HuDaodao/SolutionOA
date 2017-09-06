@@ -1,0 +1,209 @@
+﻿@model OA.Model.Dept
+@{
+    ViewBag.Title = "Dept";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<script type="text/javascript">
+    $(function () {
+        //加载tree
+        MenuDept();
+        //填充默认下拉列表
+        FullDropDown(null, null);
+
+        //清除按钮，清除文本框的内容
+        $("#Clear").on("click", function () {
+            $("#currentId").val(null);
+            $("#DeptName,#OperUser,#LastChangeTime,#Remark").val("");
+            //清空下拉及填充下拉
+            FullDropDown("", "");
+        })
+
+        //删除按钮
+        $("#Delete").on("click", function () {
+            //没有选择部门时
+            var currentId=$("#currentId").val() 
+            if (currentId == null || currentId=="") {
+                alert("请选择一个部门！");
+                return null;
+            }
+            //有选择的部门时
+            $.ajax({
+                url: "DeleteDept?id=" + $("#currentId").val(),
+                datatype: "json",
+                type: "post",
+                success: function (data) {
+                    if (data != null) {
+                        if (data == "No") {
+                            alert("存在子部门，禁止删除！");
+                            return null;
+                        }
+                        $("#Clear").trigger("click");//点了删除之后清空所有文本框
+                        //加载树
+                        MenuDept();
+                    }
+                }
+            })
+        })
+
+        //提交按钮
+        $("#Submit").on("click", function (e) {
+            e.preventDefault();
+            var deptName=$("#DeptName").val() ;
+            if (deptName == null || deptName == "")
+            {
+                alert("部门名不能为空！");
+                return null;
+            }
+            Submit($("#currentId").val())
+        })
+    });
+
+
+    //4.提交需要处理的事
+    function Submit(id) {
+        $.ajax({
+            url: 'CreateAndEditer',
+            datatype: "json",
+            type: "post",
+            data: {
+                DeptName: $("#DeptName").val(),
+                ParentId: $("#ParentId").val(),
+                Remark: $("#Remark").val(),
+                DeptId: id
+            },
+            success: function (data) {
+                if (data != null) {
+                    MenuDept();
+                    $("#Clear").trigger("click");
+                    alert("提交成功！")
+                }
+            }
+        })
+    }
+    //3.编辑点击事件
+    function EditClick(id) {
+        $("#currentId").val(id);
+        $.ajax({
+            url: "Edit?id=" +id,
+            datatype: "json",
+            type: "post",
+            async: false,
+            success: function (data) {
+                if (data != null) {
+                    var dept = eval("(" + data + ")").dept;
+                    var operUser = eval("(" + data + ")").OperUser;
+                    //处理下拉列表 ping出来
+                    FullDropDown(dept.DeptId,dept.ParentId);
+                    //填充数据
+                    $("#DeptName").val(dept.DeptName);
+                    $("#OperUser").val(operUser);
+                    if (dept.LastChangeTime != null) {
+                        var lastChangeTime = dept.LastChangeTime.split("T");//分割时间，显示到天
+                        $("#LastChangeTime").val(lastChangeTime[0]);
+                    }
+                    $("#Remark").val(dept.Remark);
+                }
+            }
+        })
+    }
+    //2.处理下拉列表
+    function FullDropDown(selfId, parentId) {
+        $("#ParentId").empty();
+           $.ajax({
+             url: "DropDownParent?id=" + selfId,
+             datatype: "json",
+             type: "post",
+             success: function (data) {
+                if (data != null) {
+                    var dropList = eval("(" + data + ")").DropList;
+                    $("#ParentId").append("<option value=''>--请选择--</option>")
+                    $.each(dropList, function (index, item) {
+                        $("#ParentId").append("<option value='" + item.DeptId + "'>" + item.DeptName + "</option>")
+                    });
+                    $("#ParentId").val(parentId);
+                }
+            }
+        })
+    }
+
+    //1.用以刷新树
+    function MenuDept() {
+        $(".tree.well ul").empty();//先清空当前树
+        $.ajax({
+            url: '@Url.Content("~/Dept/DeptMenu")',
+            datatype: "json",
+            type: "Post",
+            success: function (result) {
+                if (result !== null) {
+                    $(".tree.well").append(result);
+                    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+                    $('.tree li.parent_li > span').on('click', function (e) {
+                        var children = $(this).parent('li.parent_li').find(' > ul > li');
+                        if (children.is(":visible")) {
+                            children.hide('fast');
+                            $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+                        } else {
+                            children.show('fast');
+                            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+                        }
+                        e.stopPropagation();
+                    });
+                }
+            }
+        });
+    }
+</script>
+<div style="padding-top:70px;">
+    <div class="tree well col-sm-4" style="background-color:white;border:0px;width:300px;padding:0px;">
+        <h3>当前所有部门：</h3>
+    </div>
+    <div class="col-sm=8" style="padding-top:60px;">
+        @using (Html.BeginForm("CreateAndEditer", "Dept", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <fieldset>
+                <div class="form-group">
+                    <input  id="currentId"  type="hidden" />
+                    <label class="col-sm-2 control-label" for="DeptName">部门名</label>
+                    <div class="col-sm-3">
+                        @Html.EditorFor(model => model.DeptName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    </div>
+                    <label class="col-sm-3 control-label" for="ParentId">上级部门</label>
+                    <div class="col-sm-3">
+                        @Html.DropDownList("ParentId", new List<SelectListItem>
+                    {
+                      (new SelectListItem() {Text = "--请选择--", Value = "", Selected = true})
+                    }, new { @class = "form-control", onselect = "false" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="OperUser">上次修改人</label>
+                    <div class="col-sm-3">
+                        @Html.EditorFor(model => model.OperUser, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                    </div>
+                    <label class="col-sm-3 control-label" for="LastChangeTime">上次修改时间</label>
+                    <div class="col-sm-3">
+                        @Html.EditorFor(model => model.LastChangeTime, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="Remark">备注</label>
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(model => model.Remark, 4, 60, new { htmlAttributes = new { @class = "form-control", width = "440px" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        <input type="button" value="清空" id="Clear" class="btn btn-default" />
+                        <input type="submit" value="提交"  id="Submit" class="btn btn-default" />
+                        <input type="button" value="删除部门" id="Delete" class="btn btn-default" />
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>

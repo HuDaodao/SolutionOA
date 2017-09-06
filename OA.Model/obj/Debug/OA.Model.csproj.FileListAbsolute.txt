@@ -1,0 +1,50 @@
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\OA.Model.dll
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\OA.Model.pdb
+D:\毕业论文\OA\SolutionOA\OA.Model\obj\Debug\OA.Model.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA\OA.Model\obj\Debug\OA.Model.dll
+D:\毕业论文\OA\SolutionOA\OA.Model\obj\Debug\OA.Model.pdb
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\OA.Model.dll.config
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA\OA.Model\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\OA.Model.dll.config
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\OA.Model.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\OA.Model.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\obj\Debug\OA.Model.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\obj\Debug\OA.Model.dll
+D:\毕业论文\OA\try JSon过大\SolutionOA-4\OA.Model\obj\Debug\OA.Model.pdb
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\OA.Model.dll.config
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\OA.Model.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\OA.Model.pdb
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\obj\Debug\OA.Model.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\obj\Debug\OA.Model.dll
+D:\毕业论文\OA\back\SolutionOA-5\OA.Model\obj\Debug\OA.Model.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\OA.Model.dll.config
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\OA.Model.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\OA.Model.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA-5\OA.Model\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA-5\OA.Model\obj\Debug\OA.Model.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA-5\OA.Model\obj\Debug\OA.Model.dll
+D:\毕业论文\OA\SolutionOA-5\OA.Model\obj\Debug\OA.Model.pdb
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\OA.Model.dll.config
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\OA.Model.dll
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\OA.Model.pdb
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\Newtonsoft.Json.dll
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\OA.DAL.dll
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\OA.DAL.pdb
+D:\毕业论文\OA\SolutionOA0\OA.Model\bin\Debug\Newtonsoft.Json.xml
+D:\毕业论文\OA\SolutionOA0\OA.Model\obj\Debug\OA.Model.csprojResolveAssemblyReference.cache
+D:\毕业论文\OA\SolutionOA0\OA.Model\obj\Debug\OA.Model.dll
+D:\毕业论文\OA\SolutionOA0\OA.Model\obj\Debug\OA.Model.pdb

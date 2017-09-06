@@ -1,0 +1,181 @@
+﻿@model IEnumerable<OA.Model.TaskList>
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        var projId=@ViewData["projId"];
+        //Ping出项目详细信息
+        $.ajax({
+            url: "GetOneT?id="+projId,
+            type:"post",
+            datatype:"json",
+            success:function(data){
+                if(data!=null)
+                    var proj=eval("(" + data + ")").proj;
+
+                var projStatus=proj.Status==1?"已完成":"未完成";
+
+                $("#detailMsg").append("<table><tr><td>项目名："+proj.ProjName+  "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>预算："+proj.BudGet+
+                    "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>开始时间："+proj.StartDate+"</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>结束时间："+proj.EndDate+
+                    "</td><tr><td>完成状态："+projStatus+"</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td colspan='4'>备注："
+                    +proj.Remark+"</td><td><a href='CreateAndEditer?id="+projId+"'>编辑</td></tr></table>");
+                $("#detailMsg").append('<input type="text" hidden="hidden" id="ProjectId" value="'+projId+'" />')
+            }
+        })
+
+        $("#StartDate,#EndDate").datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: 2,
+            autoclose: true,//自动关闭
+            minView: 2,//最精准的时间选择为日期0-分 1-时 2-日 3-月
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        $("#StartDate,#EndDate").datetimepicker("update", new Date());
+        //$('#TimeSet').datetimepicker('setStartDate', new Date());
+
+        $("#addTL").on("click",function(){
+            if($("#title").val()==""||$("#title").val()==null||$("#StartDate").val()==null||$("#StartDate").val()==""||$("#EndDate").val()==""||$("#EndDate").val()==null){
+                alert("存在未填项");
+                return null;
+            }
+            //添加TaskList
+            $.ajax({
+                url:"AddTL",
+                type:"post",
+                datatype:"json",
+                data:{
+                    startTime:$("#StartDate").val(),
+                    endTime:$("#EndDate").val(),
+                    title:$("#title").val(),
+                    Remark:$("#remak").val(),
+                    projectId:projId,
+                    TLId:$("#TLId").val(),
+                },
+                success:function(data){
+                    if(data!=null){
+                        window.location = "Detail?id="+projId;
+                    }
+                }
+            })
+        })
+        $("#clear").on("click",function(){
+            $("#StartDate,#EndDate,#title,#remak,#TLId").val("");
+        })
+    })
+    //修改TaskList
+    function EditTL(id){
+        $.ajax({
+            url:"GetOneTL?id="+id,
+            type:"post",
+            datatype:"json",
+            success:function(data){
+                if(data!=null){
+                    var tl = eval("(" + data + ")").tl;
+                    $("#TLId").val(id);
+                    $("#StartDate").val(tl.StartTime.substr(0,10));
+                    $("#EndDate").val(tl.EndTime.substr(0,10));
+                    //$("#EndDate").val(tl.EndDate.substr(0,10));
+                    $("#remak").val(tl.Remark);
+                    $("#title").val(tl.TLName);
+                }
+            }
+        })
+    }
+    //删除TaskList
+    function Delete(id){
+        $.ajax({
+            url:"DeleteTL?id="+id,
+            type:"post",
+            datatype:"json",
+            success:function(data){
+                if(data!=null){
+                    window.location = "Detail?id="+$("#ProjectId").val();
+                }
+            }
+        })
+    }
+</script>
+
+<h2>项目详细信息</h2>
+<div style="height:100px;" id="detailMsg">
+    <h4>@Html.ActionLink("返回", "Index")</h4>
+</div>
+
+<div class="col-sm-10" style="overflow:scroll;height:400px;width:750px;">
+    <table class="table">
+        <tr>
+            <th>
+                阶段名
+            </th>
+            <th>
+                开始时间
+            </th>
+            <th>
+                结束时间
+            </th>
+            <th>
+                状态
+            </th>
+            <th>操作</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TLName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @if (item.Status == 1)
+                    {
+                        @:已完成
+            }
+                    else
+                    {
+                        @:未完成
+            }
+                    @*@Html.DisplayFor(modelItem => item.Status)*@
+                </td>
+                <td>
+                    <a href="javascript:void(0)" onclick="EditTL(@item.TLId)">编辑</a>
+                    |<a href="javascript:void(0)" onclick="Delete(@item.TLId)">删除</a>
+                    |<a href="javascript:void(0)" onclick="Resign(@item.TLId)">详细分配</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<div class="col-sm-2">
+    <input type="text" hidden="hidden" id="TLId" />
+    <b>阶段名</b>
+    <input type="text" class="form-control" id="title" />
+    <b>开始时间</b>
+    <input type="text" value="@DateTime.Now" id="StartDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd">
+    <b>结束时间</b>
+    <input type="text" value="@DateTime.Now" id="EndDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd">
+    <b>备注</b>
+    <textarea name="remark" cols=20 rows=8 id="remak"></textarea>
+    <div class="col-sm-6" style="margin-top:5px;">
+        <input type="button" value="保存" class="btn btn-default" id="addTL" />
+    </div>
+    <div class="col-sm-6" style="margin-top:5px;">
+        <input type="button" value="清空" class="btn btn-default" id="clear" />
+    </div>
+</div>

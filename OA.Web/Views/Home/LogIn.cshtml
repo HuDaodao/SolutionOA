@@ -1,0 +1,54 @@
+﻿@model OA.Model.Employee
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LogIn</title>
+</head>
+<body style="text-align:center">
+   @Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+    
+    
+    @using (Html.BeginForm()) 
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="form-horizontal">
+            <h4>欢迎登陆OA系统</h4>
+            <hr />
+            <br />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label class="control-label col-md-5" for="EmpPassWord">登录名</label>
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.EmpUserName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EmpUserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+    
+            <div class="form-group">
+                <label class="control-label col-md-5" for="EmpPassWord">密码</label>
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.EmpPassWord, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessage("EmpPassWord", "")
+                    @*@Html.ValidationMessageFor(model => model.EmpPassWord, "", new { @class = "text-danger" })*@
+                </div>
+            </div>    
+            <div class="form-group">
+                <div class="col-md-offset-1 col-md-12">
+                    <input type="submit" value="登录" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

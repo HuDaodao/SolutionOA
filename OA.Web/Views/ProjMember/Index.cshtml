@@ -1,0 +1,59 @@
+﻿@model IEnumerable<OA.Model.Project>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<label >此功能尚待完善</label>
+<br />
+<br />
+<br/>
+
+<div class="col-sm-4">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>操作</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="myone_row">
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.ActionLink("查看详细", "Project/Detail", new { id = item.ProjectId }) 
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<div class="col-sm-4">
+    这里是这个这个当前项目已经有的人员
+</div>
+
+<div class="col-sm-4">
+    这里是所有人员
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(".myone_row").hover(function () {
+            $(this).css("background-color", "#cecece")
+        }, function () {
+            $(this).css("background-color", "white")
+        })
+    })
+</script>

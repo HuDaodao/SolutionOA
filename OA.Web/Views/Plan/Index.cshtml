@@ -1,0 +1,81 @@
+﻿@model IEnumerable<IEnumerable<OA.Model.TimeForPlan>>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        $("#serachBtn").click(function () {
+            window.location = "Index?sDate=" + $("#TimeSet").val();
+        })
+
+        //时间控件
+        $("#TimeSet").datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: 2,
+            autoclose: true,//自动关闭
+            //minDate: new Date(),
+            minView: 2,//最精准的时间选择为日期0-分 1-时 2-日 3-月
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        $("#TimeSet").datetimepicker("update", new Date());
+        //$('#TimeSet').datetimepicker('setStartDate', new Date());
+    })
+</script>
+
+<div class="input-group col-sm-2" style="margin-bottom:5px;margin-top:10px;">
+    <input type="text" value="@DateTime.Now" id="TimeSet" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd">
+</div>
+<div class="input-group col-sm-3" style="margin-bottom:5px;margin-top:10px;">
+    <span class="input-group-btn">
+        <button class="btn btn-info bt-search" id="serachBtn">查找</button>
+        <button class="btn btn-info bt-search">@Html.ActionLink("新增计划", "Add")</button>
+    </span>
+</div>
+
+<table class="table">
+    <tr><th></th>
+        @{List<OA.Model.PlanPeriod> times = ViewData["times"] as List<OA.Model.PlanPeriod>;
+            foreach (OA.Model.PlanPeriod t in times)
+            {
+                <th>@t.Time</th>
+            } }
+    </tr>
+   @{ 
+       DateTime StartDate = (DateTime)ViewData["StartDate"];
+       int i = 0;
+       foreach (var item in Model)
+       {
+           <tr>
+               <th>
+                   @StartDate.AddDays(i).ToShortDateString()
+               </th>
+               @{int  j= 0;
+                   foreach (var p in item)
+                   {
+                       var bcg = p.HasWork ? "background:#ccc" : "";
+                       <td style=@bcg>
+                           @if (p.Status == 1)
+                           {
+                               <a href="Add?id=@p.Title" title="@p.Title" style="font-size:11px;">@p.Title 开始</a>
+                           }
+                           else if (p.Status == -1)
+                           {
+                            <a href="#" title="@p.Title" style="font-size:11px;">@p.Title 结束</a>
+                           }
+                       </td>
+                       j++;
+                   }
+                   }
+           </tr>
+                       i++;
+       }
+   }
+</table>

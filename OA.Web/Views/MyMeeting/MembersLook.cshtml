@@ -1,0 +1,61 @@
+﻿@model IEnumerable<OA.Model.MeetMember>
+
+@{
+    ViewBag.Title = "MeetingMember";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<script type="text/javascript">
+    $(function () {
+        loadPage();
+        //显示所有人员
+        $("#searchMsg").on("click", function () {
+            loadPage();
+        })
+     
+    })
+    //加载当前成员列表
+    function loadPage() {
+        $("#List").empty();
+        $.ajax({
+            url: "MMListLook",
+            datatype: "json",
+            type: "Post",
+            data: { isJoined: $("#Joined").val(), mId: $("#meetid").val() },
+            success: function (data) {
+                if (data != null) {
+                    addToList(data);
+                }
+            }
+        });
+    }
+
+    //加载会议成员列表
+    function addToList(data) {
+        $("#List").append('<table id="data_table" class="table"> <thead><tr><th>姓名</th><th>是否参加</th></tr><tbody></tbody></table>');
+        $.each(eval("(" + data + ")").list, function (index, item) {
+            var joined = item.Joined == 0 ? "未参加" : "已参加";
+            $("#data_table tbody").append('<tr><td>' + item.EmpName + '</td><td>'+joined+'</td></tr>');
+        });
+    }
+
+</script>
+
+<input type="hidden" id="meetid" value="@ViewData["MeetId"]"/>
+   
+        <div class="input-group col-sm-2" style="margin-bottom:5px;position:relative">
+            @Html.DropDownList("Joined", new List<SelectListItem>
+        {
+            ( new SelectListItem() { Text="未出席",Value="0",Selected=true}),
+            (new SelectListItem() { Text="出席",Value="1",Selected=false})
+        }, new { @class = "form-control" })
+        </div>
+        <div class="col-sm-6">
+            <button class="btn btn-info bt-search" id="searchMsg">查询</button>
+            <a href="List">返回</a>
+        </div>
+            <span  style="display:inline;width:480px;float:left;"><b>当前成员</b><span  id="List"></span></span>
+
+    
+
+

@@ -1,0 +1,74 @@
+﻿@model OA.Model.MeetRoom
+
+@{
+    ViewBag.Title = "CreateAndEditer";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<script type="text/javascript">
+    $(function () {
+        //提交事件
+        $(".btn").on("click", function (event) {
+            event.preventDefault()
+            if ($("#RoomName").val() == null || $("#RoomName").val() == "") {
+                alert("会议室名不能为空！")
+                return null;
+            }
+            if ($("#Person").val() == null || $("#RoomName").val() == "") {
+                alert("容纳人数不能为空！")
+                return null;
+            }
+            $.ajax({
+                url: "CreateAndEditer",
+                type: "post",
+                data: {
+                    name: $("#RoomName").val(),
+                    id: $("#RoomId").val(),
+                    remark: $("#Remark").val(),
+                    person: $("#Person").val()
+                },
+                success: function (result) {
+                    if (result !== null) {
+                        alert("保存成功！");
+                    }
+                }
+            });
+            return false;
+        });
+    })
+</script>
+
+<h2>会议室信息</h2>
+@using (Html.BeginForm("CreateAndEditer", "MeetingRoom", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <fieldset>
+        <legend>@Html.ActionLink("返回", "List")</legend>
+        <div class="form-group">
+            <input type="hidden" id="EmpId" />
+            @Html.HiddenFor(model => model.RoomId)
+            <label class="col-sm-4 control-label" for="RoomName">会议室名</label>
+            <div class="col-sm-5">
+                @Html.EditorFor(model => model.RoomName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.RoomName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="Person">可容纳人数</label>
+            <div class="col-sm-5">
+                @Html.EditorFor(model => model.Person, new { htmlAttributes = new { @class = "form-control", required = "required", type = "number" } })
+                @Html.ValidationMessageFor(model => model.Person, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="Remark">备注</label>
+            <div class="col-sm-5">
+                @Html.TextAreaFor(model => model.Remark, 4, 60, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-5">
+                <input type="button" value="提交" class="btn btn-default" />
+            </div>
+        </div>
+    </fieldset>
+}

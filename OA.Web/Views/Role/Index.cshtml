@@ -1,0 +1,255 @@
+﻿@*@model IEnumerable<OA.Model.Role>*@
+ @*@model OA.Model.MyMenu*@
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap-paginator.js"></script>
+<script type="text/javascript">
+    //加载页码样式
+    $(function () {
+        $.ajax({
+            url: "PageList",
+            datatype: "json",
+            type: "Post",
+            success: function (data) {
+                if (data != null) {
+                    addToList(data);
+                    var pageCount = eval("(" + data + ")").pageCount; //取到pageCount的值(把返回数据转成object类型)
+                    var currentPage = eval("(" + data + ")").currentPage; //得到CurrentPage
+                    var options = {
+                        bootstrapMajorVersion: 2, //版本
+                        currentPage: currentPage, //当前页数
+                        totalPages: pageCount, //总页数
+                        itemTexts: function (type, page, current) {
+                            switch (type) {
+                                case "first":
+                                    return "首页";
+                                case "prev":
+                                    return "上一页";
+                                case "next":
+                                    return "下一页";
+                                case "last":
+                                    return "末页";
+                                case "page":
+                                    return page;
+                            }
+                        },//点击事件，用于通过Ajax来刷新整个list列表
+                        onPageClicked: function (event, originalEvent, type, page) {
+                            $("#List").empty();
+                            $("#pager").hide();
+                            $.ajax({
+                                url: "PageList",
+                                type: "Post",
+                                data: { page: page },
+                                success: function (data) {
+                                    if (data != null) {
+                                        addToList(data);
+                                    }
+                                    $("#pager").show();
+                                }
+                            });
+                        }
+                    };
+                    $('#pager').bootstrapPaginator(options);
+                }
+            }
+        });
+
+
+
+        var pageCount = $("#pageCount").val();
+        var currentPage = $("#currentPage").val();
+        //alert(pageCount+"+"+currentPage)
+        var options = {
+            bootstrapMajorVersion: 2,
+            currentPage: currentPage==null?1:currentPage,
+            totalPages: pageCount,
+            itemTexts: function (type, page, current) {
+                switch (type) {
+                    case "first":
+                        return "首页";
+                    case "prev":
+                        return "上一页";
+                    case "next":
+                        return "下一页";
+                    case "last":
+                        return "末页";
+                    case "page":
+                        return page;
+                }
+            },
+            onPageClicked: function (event, originalEvent, type, page) {
+                $("table  tr:not(:first)").html("");
+                //document.getElementById('test').innerHTML = '';
+                $.ajax({
+                    url: "Index",
+                    type: "Post",
+                    data: { page: page },
+                    success: function () {
+                        //alert(0)
+                    }
+                })
+            }
+        };
+        $("#pager").bootstrapPaginator(options);
+
+        //1.提交按钮
+        $("#Submit").on("click", function (e) {
+            e.preventDefault();
+            var Name = $("#Name").val();
+            if (Name == null || Name == "") {
+                alert("角色名不能为空！");
+                return null;
+            }
+            Submit();
+        })
+
+        //清除按钮，清除文本框的内容
+        $("#Clear").on("click", function () {
+            $("#RoleId").val(null);
+            $("#Name,#Remark").val("");
+        })
+    })
+    //点击删除（直接绑定）
+    function Delete(id) {
+        $.ajax({
+            url: "DeleteRole?id=" + id,
+            datatype: "json",
+            type: "post",
+            success: function (data) {
+                if (data != null) {
+                    location.reload();
+                }
+            }
+        })
+    }
+    //点击编辑按钮(直接绑定)
+    function EditClick(id) {
+        $.ajax({
+            url: "Edit?id=" + id,
+            datatype: "json",
+            type: "post",
+            async: false,
+            success: function (data) {
+                if (data != null) {
+                    var role = eval("(" + data + ")").role;
+                    //填充数据
+                    $("#Name").val(role.Name);
+                    $("#Remark").val(role.Remark);
+                    $("#RoleId").val(role.RoleId);
+                    //清空复选框
+                    $("input:checkbox").each(function () { $(this).attr("checked", false); });
+                    var roleright = eval("(" + data + ")").roleRight;
+                    $.each(eval("(" + data + ")").roleRight, function (index,item) {
+                        var obj = $("[value=" + item.RightCode + "]").attr("checked", "checked");
+                    })
+                }
+            }
+        })
+    }
+
+    //1.提交的ajax
+    function Submit() {
+        var obj = document.getElementsByName('right');
+        check = [];
+        for (var i=0;i<obj.length; i++) {
+            if (obj[i].checked) {
+                check.push(obj[i].value)
+            }
+        }
+        $.ajax({
+            url: 'CreateEdit',
+            datatype: "json",
+            type: "post",
+            data: {
+                Name: $("#Name").val(),
+                Remark: $("#Remark").val(),
+                RoleId: $("#RoleId").val(),
+                Right:check
+            },
+            success: function (data) {
+                if (data != null) {
+                    //刷新当前页
+                    location.reload();
+                }
+            }
+        })
+    }
+    //ping出表格
+    function addToList(data) {
+        $("#List").append('<table id="data_table" class="table table-striped"> <thead><tr><th>角色名</th><th>备注</th><th>操  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作</th></tr><tbody></tbody></table>');
+        $.each(eval("(" + data + ")").list, function (index, item) { //遍历返回的json
+            if (item.Remark == null)
+                var Remark = "";
+            $("#data_table tbody").append('<tr><td>' + item.Name + '</td><td>' + item.Remark
+                + '</td><td><a class="edit"  href="javascript:void(0);" onclick="EditClick(' + item.RoleId +
+                ')">修改</a>   <a class="confirm-link" href="javascript:void(0);" onclick="Delete(' + item.RoleId + ')">删除</a></td></tr>');
+        });
+    }
+</script>
+
+<div style="padding-top:20px;">
+    <div class="col-sm-7">
+        <div id="List"></div>
+        <div id="pager"></div>
+    </div>
+    <div class="col-sm-5" id="Form"  style="padding-top:20px;">
+        @using (Html.BeginForm("CreateAndEditer", "Role", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+              <fieldset>
+                <div class="form-group">
+                    <input id="RoleId" type="hidden" />
+                    <label class="col-sm-3 control-label" for="Name">角色名</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" required="required" id="Name" />
+                        @*@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", required = "required" } })*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Remark">备注</label>
+                    <div class="col-sm-9">
+                        @*<input type="textarea" class="form-control" id="Remark" style="height:80px;width:280px"/>*@
+                        <textarea name="Remark" id="Remark" style="width:280px;height:80px;"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Right">权限</label>
+                    <div class="col-sm-9">
+                        <table id="right">
+                            @foreach (var menu in (List<OA.Model.MyMenu>)ViewData["Right"])
+                            {
+                                if (!menu.Right) { continue; }
+                                <tr>
+                                    <th>
+                                        @menu.Name
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @foreach (var toobar in menu.Children)
+                                        {
+                                            if (!toobar.Right) { continue; }
+                                            <input type="checkbox" name="right" class="right" value="@toobar.Code" />
+                                            @toobar.Name
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        <input type="button" value="清空" id="Clear" class="btn btn-default" />
+                        <input type="submit" value="提交" id="Submit" class="btn btn-default" />
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>

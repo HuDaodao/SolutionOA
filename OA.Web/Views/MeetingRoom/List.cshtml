@@ -1,0 +1,178 @@
+﻿@model IEnumerable<OA.Model.MeetRoom>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+<script src="~/Scripts/bootstrap-paginator.js"></script>
+<script type="text/javascript">
+    $(function () {
+        loadPage();
+        function loadPage() {
+            $.ajax({
+                url: "List_Json",
+                type: "post",
+                data: { searchMsg: $("#serachText").val(), IsValid: $("#IsValid").val() },
+                success: function (data) {
+                    if (data != null) {
+                        addToList(data);
+                        var pageCount = eval("(" + data + ")").pageCount; //取到pageCount的值(把返回数据转成object类型)
+                        var currentPage = eval("(" + data + ")").CurrentPage; //得到CurrentPage
+                        var options = {
+                            bootstrapMajorVersion: 2, //版本
+                            currentPage: currentPage, //当前页数
+                            totalPages: pageCount, //总页数
+                            itemTexts: function (type, page, current) {
+                                switch (type) {
+                                    case "first":
+                                        return "首页";
+                                    case "prev":
+                                        return "上一页";
+                                    case "next":
+                                        return "下一页";
+                                    case "last":
+                                        return "末页";
+                                    case "page":
+                                        return page;
+                                }
+                            },//点击事件，用于通过Ajax来刷新整个list列表
+                            onPageClicked: function (event, originalEvent, type, page) {
+                                $("#List").empty();
+                                $("#pager").hide();
+                                $.ajax({
+                                    url: "List_Json" + "?id=" + page,
+                                    type: "Post",
+                                    data: { page: page, searchMsg: $("#serachText").val(), IsValid: $("#IsValid").val() },
+                                    success: function (data1) {
+                                        if (data1 != null) {
+                                            addToList(data1);
+                                        }
+                                        $("#pager").show();
+                                    }
+                                });
+                            }
+                        };
+                        $("#pager").bootstrapPaginator(options);
+                    }
+                }
+            })
+        }
+
+            $("#serachBtn").click(function () {
+                $("#List").empty();
+                $("#pager").hide();
+                loadPage();
+                $("#pager").show();
+            })
+    })
+        function addToList(data) {
+            $("#List").append('<table id="data_table" class="table table-striped"> <thead><tr><th>会议室名</th><th>可容纳人数</th><th>备注</th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作</th></tr><tbody></tbody></table>');
+            $.each(eval("(" + data + ")").list, function (index, item) { //遍历返回的json
+                str = item.IsValid == true ? '<a class="valid" id=' + item.RoomId + '  href="ValidChangeNo?id=' + item.RoomId + '">设为不可用&nbsp;</a>' : '<a class="valid" id='
+                    + item.RoomId + '  href="ValidChangeYes?id=' + item.RoomId + '">设为可用&nbsp;</a>'
+                $("#data_table tbody").append('<tr><td>' + item.RoomName + '</td><td>' + item.Person + '</td><td>'
+                    + item.Remark + '</td><td>' + str + '<a class="edit" id=' + item.RoomId + '  href="CreateAndEditer?id=' +
+                    item.RoomId + '">修改</a> <a class="confirm-link" id="delete" href="#" onclick="deleteFunc(' + item.RoomId + ')">删除</a></td></tr>');
+            });
+        }
+        function deleteFunc(roomId) {
+            var r = confirm("确认删除这条数据");
+            if (r == true) {
+                $.ajax({
+                    url: "delete?id=" + roomId,
+                    datatype: "json",
+                    type: "Post",
+                    success: function (data) {
+                        if (data == "yes") {
+                            $("#List").empty();
+                            $("#pager").empty();
+                            $.ajax({
+                                url: "List_Json",
+                                datatype: "json",
+                                type: "Post",
+                                data: { searchMsg: $("#serachText").val(), IsValid: $("#IsValid").val() },
+                                success: function (data) {
+                                    if (data != null) {
+                                        addToList(data);
+                                        var pageCount = eval("(" + data + ")").pageCount; //取到pageCount的值(把返回数据转成object类型)
+                                        var currentPage = eval("(" + data + ")").CurrentPage; //得到CurrentPage
+                                        var options = {
+                                            bootstrapMajorVersion: 2, //版本
+                                            currentPage: currentPage, //当前页数
+                                            totalPages: pageCount, //总页数
+                                            itemTexts: function (type, page, current) {
+                                                switch (type) {
+                                                    case "first":
+                                                        return "首页";
+                                                    case "prev":
+                                                        return "上一页";
+                                                    case "next":
+                                                        return "下一页";
+                                                    case "last":
+                                                        return "末页";
+                                                    case "page":
+                                                        return page;
+                                                }
+                                            },//点击事件，用于通过Ajax来刷新整个list列表
+                                            onPageClicked: function (event, originalEvent, type, page) {
+                                                $("#List").empty();
+                                                $("#pager").hide();
+                                                $.ajax({
+                                                    url: "List_Json",
+                                                    type: "Post",
+                                                    data: { page: page, searchMsg: $("#serachText").val(), IsValid: $("#IsValid").val() },
+                                                    success: function (data1) {
+                                                        if (data1 != null) {
+                                                            addToList(data1);
+                                                        }
+                                                        $("#pager").show();
+                                                    }
+                                                });
+                                            }
+                                        };
+                                        $("#pager").bootstrapPaginator(options);
+                                    }
+                                    alert("删除成功");
+                                }
+                            });
+                        }
+                        else {
+                            alert("删除失败");
+                        }
+                    }
+                })
+            }
+        }
+</script>
+@*<style type="text/css">
+    button a {
+        color: white;
+        text-decoration-line: none;
+    }
+
+        button a:hover {
+            color: white;
+            text-decoration-line: none;
+        }
+</style>*@
+
+
+
+<body style="width:100%;padding-top:10px;">
+    <div class="input-group col-sm-2" style="margin-bottom:5px;position:relative">
+        @Html.DropDownList("IsValid", new List<SelectListItem>
+        {
+            ( new SelectListItem() { Text="可用",Value="true",Selected=true}),
+            (new SelectListItem() { Text="不可用",Value="false",Selected=false})
+        }, new { @class = "form-control" })
+    </div>
+    <div class="input-group col-sm-3" style="margin-bottom:5px;position:relative">
+        <input type="text" class="form-control" id="serachText" placeholder="请输入会议室姓名" style="width:150px;">
+        <span class="input-group-btn">
+            <button class="btn btn-info bt-search" id="serachBtn">查找</button>
+            <button class="btn btn-info bt-search" style="margin-left:3px;color:white;">@Html.ActionLink("新增会议室", "CreateAndEditer")</button>
+        </span>
+    </div>
+    <div id="List"></div>
+    <div id="pager"></div>
+</body>

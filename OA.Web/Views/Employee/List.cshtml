@@ -1,0 +1,198 @@
+﻿
+@*@using OA.BLL;*@
+@*@model PageOfList<OA.Model.Employee>*@
+@model IEnumerable<OA.Model.Employee>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>员工信息列表</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/MyNeedJs")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap-paginator.js"></script>
+    <script type="text/javascript">
+        function deleteFunc(empId) {
+            var r = confirm("确认删除这条数据");
+            if (r == true) {
+                $.ajax({
+                    url: 'delete?id=' + empId,
+                    datatype: 'json',
+                    type: "Post",
+                    success: function (data) {
+                        if(data=="yes"){
+                            $("#List").empty();
+                            $("#pager").empty();
+                           $.ajax({
+                               url: '@Url.Content("~/Employee/List_Json")',
+                               datatype: 'json',
+                               type: "Post",
+                               data: { searchMsg: $("#serachText").val(),IsDimission:$("#IsDimission").val() },
+                               success: function (data) {
+                                   if (data != null) {
+                                       addToList1(data);
+                                       var pageCount = eval("(" + data + ")").pageCount; //取到pageCount的值(把返回数据转成object类型)
+                                       var currentPage = eval("(" + data + ")").CurrentPage; //得到CurrentPage
+                                       var options = {
+                                           bootstrapMajorVersion: 2, //版本
+                                           currentPage: currentPage, //当前页数
+                                           totalPages: pageCount, //总页数
+                                           itemTexts: function (type, page, current) {
+                                               switch (type) {
+                                                   case "first":
+                                                       return "首页";
+                                                   case "prev":
+                                                       return "上一页";
+                                                   case "next":
+                                                       return "下一页";
+                                                   case "last":
+                                                       return "末页";
+                                                   case "page":
+                                                       return page;
+                                               }
+                                           },//点击事件，用于通过Ajax来刷新整个list列表
+                                           onPageClicked: function (event, originalEvent, type, page) {
+                                               $("#List").empty();
+                                               $("#pager").hide();
+                                               $.ajax({
+                                                   url: '@Url.Content("~/Employee/List_Json")' + "?id=" + page,
+                                                   type: "Post",
+                                                   data: { page: page, searchMsg: $("#serachText").val(), IsDimission: $("#IsDimission").val() },
+                                                   success: function (data1) {
+                                                       if (data1 != null) {
+                                                           addToList1(data1);
+                                                       }
+                                                       $("#pager").show();
+                                                   }
+                                               });
+                                           }
+                                       };
+                                       $('#pager').bootstrapPaginator(options);
+                                   }
+                                   alert("删除成功");
+                               }
+                           });
+                        }
+                        else {
+                            alert("删除失败");
+                        }
+                    }
+                })
+            }
+        }
+
+        $(function () {
+            var carId = 1;
+            loadPage();
+            function loadPage(){
+                $.ajax({
+                    url: '@Url.Content("~/Employee/List_Json")',
+                    datatype: 'json',
+                    type: "Post",
+                    data: { id: carId, searchMsg: $("#serachText").val(), IsDimission: $("#IsDimission").val() },
+                    success: function (data) {
+                        if (data != null) {
+                            addToList1(data);
+                            var pageCount = eval("(" + data + ")").pageCount; //取到pageCount的值(把返回数据转成object类型)
+                            var currentPage = eval("(" + data + ")").CurrentPage; //得到CurrentPage
+                            var options = {
+                                bootstrapMajorVersion: 2, //版本
+                                currentPage: currentPage, //当前页数
+                                totalPages: pageCount, //总页数
+                                itemTexts: function (type, page, current) {
+                                    switch (type) {
+                                        case "first":
+                                            return "首页";
+                                        case "prev":
+                                            return "上一页";
+                                        case "next":
+                                            return "下一页";
+                                        case "last":
+                                            return "末页";
+                                        case "page":
+                                            return page;
+                                    }
+                                },//点击事件，用于通过Ajax来刷新整个list列表
+                                onPageClicked: function (event, originalEvent, type, page) {
+                                    $("#List").empty();
+                                    $("#pager").hide();
+                                    $.ajax({
+                                        url:'@Url.Content("~/Employee/List_Json")' +"?id="+ page,
+                                        type: "Post",
+                                        data: { page: page, searchMsg: $("#serachText").val(), IsDimission: $("#IsDimission").val() },
+                                        success: function (data1) {
+                                            if (data1 != null) {
+                                                addToList1(data1);
+                                            }
+                                            $("#pager").show();
+                                        }
+                                    });
+                                }
+                            };
+                            $('#pager').bootstrapPaginator(options);
+                        }
+                    }
+                });
+            }
+
+            $("#serachBtn").click(function () {
+                $("#List").empty();
+                $("#pager").hide();
+                loadPage();
+                $("#pager").show();
+            })
+    })
+        function addToList1(data) {
+            $("#List").append('<table id="data_table" class="table table-striped"> <thead><tr><th>姓名</th><th>昵称</th><th>密码</th><th>部门</th><th>职位</th><th>性别</th><th>邮箱</th><th>手机</th><th>是否离职</th><th>管理员</th><th>操  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作</th></tr><tbody></tbody></table>');
+            $.each(eval("(" + data + ")").list, function (index, item) { //遍历返回的json
+                var sex = item.Sex == true ? "男" : "女";
+                var dimission = item.Dimission == true ? "已离职" : "未离职";
+                var admin = item.Admin == true ? "是" : "否";
+                $("#data_table tbody").append('<tr><td>' + item.EmpName + '</td><td>'
+                    + item.EmpUserName + '</td><td>' + item.EmpPassWord + '</td><td>' + item.DeptName + '</td><td>' + item.PosName + '</td><td>'
+                    + sex + '</td><td>' + item.Email + '</td><td>' + item.Mobile + '</td><td>' + dimission + '</td><td>'
+                    + admin + '</td><td><a class="edit" id=' + item.EmpId + '  href="CreateAndEditer?id=' +
+                    item.EmpId + '">修改</a>   <a class="confirm-link" id="delete" href="#" onclick="deleteFunc(' + item.EmpId + ')">删除</a></td></tr>');
+            });
+        }
+    </script>
+    <style type="text/css">
+        button a{
+            color:white;
+            text-decoration-line:none;
+        }
+        button a:hover{
+            color:white;
+            text-decoration-line:none;
+        }
+    </style>
+</head>
+<body style="width:100%;padding-top:10px;">
+    <div class="input-group col-sm-2" style="margin-bottom:5px;position:relative">
+        @Html.DropDownList("IsDimission",new List<SelectListItem>
+        {
+            ( new SelectListItem() { Text="未离职",Value="false",Selected=true}),
+            (new SelectListItem() { Text="已离职",Value="true",Selected=false})
+        },new { @class="form-control"})
+    </div>
+        <div class="input-group col-sm-3" style="margin-bottom:5px;position:relative">
+            <input type="text" class="form-control" id="serachText" placeholder="请输入员工姓名" style="width:150px;">
+            <span class="input-group-btn">
+                <button class="btn btn-info bt-search" id="serachBtn">查找</button>
+                <button class="btn btn-info bt-search" style="margin-left:3px;color:white;">@Html.ActionLink("新增员工", "CreateAndEditer")</button>
+            </span>
+        </div>
+        <div id="List"></div>
+        <div id="pager"></div>
+</body>
+</html>

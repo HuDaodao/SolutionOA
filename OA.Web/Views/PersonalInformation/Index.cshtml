@@ -1,0 +1,102 @@
+﻿@model OA.Model.Employee
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<script type="text/javascript">
+        //保存事件
+    $(function () {
+        $("#submit").hide();
+        $("#edit").on("click", function () {
+            $(".col-sm-3 input,select").attr("disabled", false);
+            $(this).hide();
+            $("#submit").show();
+        })
+       
+        $("#submit").on("click", function (e) {
+            e.preventDefault();
+            var valid = $("#EmpName").val() == "" || $("#EmpPassWord").val() == "" || $("#EmpUserName").val() == "";
+            if (!valid) {
+                $.ajax({
+                    url: "Index",
+                    type: "post",
+                    data: {
+                        Id: $("#EmpId").val(),
+                        EmpName: $("#EmpName").val(),
+                        EmpUserName: $("#EmpUserName").val(),
+                        Email: $("#Email").val(),
+                        EmpPassWord: $("#EmpPassWord").val(),
+                        Mobile: $("#Mobile").val(),
+                        },
+                    success: function (result) {
+                        if (result !== null) {
+                            $(".col-sm-2 input,.col-sm-3 input,select").attr("disabled", "disabled");
+                            $("#submit").hide();
+                            $("#edit").show();
+                            alert("保存成功！")
+                        }
+                    }
+                });
+            } else {
+                return null;
+            }
+        });
+    })
+</script>
+<h4>我的信息</h4>
+<hr />
+@using (Html.BeginForm("Index", "PersonalInformation", FormMethod.Post,new { @class = "form-horizontal", role = "form" }))
+{
+      
+    <fieldset>
+        <div class="form-group">
+            @Html.HiddenFor(model => model.EmpId)
+            <label class="col-sm-1 control-label" for="EmpName">姓名</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.EmpName, new { htmlAttributes = new { @class = "form-control", required = "required", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.EmpName, "", new { @class = "text-danger" })
+                @*<input class="form-control" id="EmpName" type="text" />*@
+            </div>
+            <label class="col-sm-1 control-label" for="EmpUserName">昵称</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.EmpUserName, new { htmlAttributes = new { @class = "form-control", required = "required", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.EmpUserName, "", new { @class = "text-danger" })
+            </div>
+            <label class="col-sm-1 control-label" for="Sex">性别</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("Sex", new List<SelectListItem>
+                    {
+                      (new SelectListItem() {Text = "男", Value = "true", Selected =true}),
+                      (new SelectListItem() {Text = "女", Value = "false", Selected = false})
+                    }, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-1 control-label" for="Email">邮箱</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", type = "email", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+
+            <label class="col-sm-1 control-label" for="EmpPassWord">密码</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.EmpPassWord, new { htmlAttributes = new { @class = "form-control", required = "required", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.EmpPassWord, "", new { @class = "text-danger" })
+            </div>
+            <label class="col-sm-1 control-label" for="Mobile">手机</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-6">
+                <input type="button" value="修改" id="edit" class="btn btn-default" />
+                <input type="submit" value="提交" id="submit" class="btn btn-default" />
+            </div>
+        </div>
+    </fieldset>
+}
+

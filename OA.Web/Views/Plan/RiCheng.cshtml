@@ -1,0 +1,157 @@
+﻿@*@model IEnumerable<OA.Model.RiCheng>*@
+@model OA.Model.RiCheng
+
+@{
+    ViewBag.Title = "RiCheng";
+    Layout = "~/Views/Shared/_JsCss.cshtml";
+}
+
+<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        $("#serachBtn").click(function () {
+            window.location = "RiCheng?month=" + $("#TimeSet").val();
+        })
+        //时间控件
+        $("#TimeSet").datetimepicker({
+            format: "yyyy-mm",
+            startView: 3,
+            autoclose: true,//自动关闭
+            //minDate: new Date(),
+            minView: 3,//最精准的时间选择为日期0-分 1-时 2-日 3-月
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        $("#PlanDate").datetimepicker({
+            format: "yyyy-mm-dd",
+            startView: 2,
+            autoclose: true,//自动关闭
+            //minDate: new Date(),
+            minView: 2,//最精准的时间选择为日期0-分 1-时 2-日 3-月
+            weekStart: 0,
+            language: 'zh-CN',
+            startDate: "@DateTime.Now",
+            todayBtn: "linked"
+        });
+        $("#TimeSet,#PlanDate").datetimepicker("update", new Date());
+        //$('#TimeSet').datetimepicker('setStartDate', new Date());
+        //提交按钮
+        $("#submit").on("click", function () {
+            if ($("#RCTitle").val() == "" || $("#PlanDate").val() == "") {
+                alert("存在未填项！");
+                return null;
+            }
+            $.ajax({
+                url: "AddRiCheng",
+                datatype: "json",
+                type: "post",
+                data:{
+                    title:$("#RCTitle").val(),
+                    remark:$("#Remark").val(),
+                    dateTime:$("#PlanDate").val(),
+                    riChengId:$("#RCId").val()
+                },
+                success: function (data) {
+                    if (data != null) {
+                        window.location = "RiCheng?month=" + $("#TimeSet").val();
+                    }
+                }
+            })
+        })
+
+        //删除按钮
+        $("#delete").on("click", function () {
+            var id = $("#RCId").val();
+            if (id == null || id == "") {
+                alert("请选择一个日程！");
+                return null;
+            }
+            else {
+                $.ajax({
+                    url: "DeleteRC?id=" + id,
+                    type: "post",
+                    datatype: "json",
+                    success: function (data) {
+                        if (data != null) {
+                            window.location = "RiCheng?month=" + $("#TimeSet").val();
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+    function alink(id) {
+        $.ajax({
+            url: "GetOneRC?id=" + id,
+            datatype: "json",
+            type: "post",
+            success: function (data) {
+                if (data != null) {
+                    var rc = eval("(" + data + ")").rc;
+                    $("#RCTitle").val(rc.RCTitle);
+                    $("#PlanDate").val(rc.RCDateTime.substr(0,10));
+                    $("#Remark").val(rc.Remark);
+                    $("#RCId").val(rc.RCId);
+                }
+            }
+        })
+    }
+</script>
+    <div class="input-group col-sm-2" style="margin-bottom:5px;margin-top:10px;">
+        <input type="text" value="@DateTime.Now" id="TimeSet" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd">
+    </div>
+    <div class="input-group col-sm-3" style="margin-bottom:5px;margin-top:10px;">
+        <span class="input-group-btn">
+            <button class="btn btn-info bt-search" id="serachBtn">查找</button>
+        </span>
+    </div>
+    <div class="input-group  col-sm-8">
+        <table class="tbedit">
+            @using (Html.BeginForm())
+            {
+                <tr>
+                    <td colspan="3" id="calendar">
+                        @Html.Raw(ViewData["strTable"].ToString())
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+<div class="input-group col-sm-4" >
+@using (Html.BeginForm("Add", "RiCheng", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <fieldset>
+        <div class="form-group">
+            @Html.HiddenFor(model => model.RCId)
+            <label class="col-sm-3 control-label" for="RCTitle">主题</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.RCTitle, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="PlanDate">日期</label>
+            <div class="col-sm-9">
+                <input type="text" value="@DateTime.Now" id="PlanDate" class="dateTimeStar form-control" data-date-format="yyyy-mm-dd">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="Remark">备注</label>
+            <div class="col-sm-9">
+                @Html.TextAreaFor(model => model.Remark, 4, 33 , new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9">
+                <input type="button"  value="提交" id="submit" class="btn btn-default" />
+                <input  type="button" value="删除" id="delete" class="btn btn-default"/>
+            </div>
+        </div>
+    </fieldset>
+}
+</div>
